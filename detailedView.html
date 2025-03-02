@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed View - Droits & Obligations</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #2d2d2d; /* Soft pink background */
+            color: #333;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        /* Sankey Container */
+        .sankey-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* Tooltip Style */
+        #tooltip {
+            background: #e30613; /* Vibrant red for contrast */
+            color: #fff;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 14px;
+            display: inline-block;
+            position: absolute;
+            z-index: 1000;
+            visibility: hidden; /* Keep hidden until needed */
+        }
+
+        /* Select Dropdown */
+        select {
+            padding: 8px;
+            border-radius: 4px;
+            border: none; /* Remove border */
+            font-size: 16px;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #9ecfab; /* Light green for select */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            color: #333;
+        }
+
+        /* Hover Effects */
+        .node rect:hover {
+            fill-opacity: 0.8;
+            cursor: pointer;
+        }
+
+        /* Node and Link Styles */
+        .node rect {
+            stroke: #fff;
+            stroke-width: 2px;
+        }
+
+        .link {
+            stroke: #de8500; /* Mustard color for links */
+            stroke-opacity: 0.7;
+        }
+
+        /* Text Style */
+        text {
+            fill: #333;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .sankey-container {
+                margin: 10px;
+                flex-direction: column;
+            }
+            select {
+                width: calc(100% - 40px);
+            }
+        }
+
+        /* ... (keep the previous styles and add the following) ... */
+
+        /* Sankey Container */
+        .sankey-container {
+            width: 100%; /* Full width to help center the diagram */
+            max-width: 1200px; /* Max width for larger screens */
+            margin: 20px auto; /* Centering the container */
+        }
+
+        /* SVG Style */
+        svg {
+            display: block; /* Ensures no extra space below svg element */
+            margin: auto; /* Center align the SVG within its container */
+        }
+
+        /* Text Style */
+        text {
+            font-size: 12px; /* Smaller font size for better fit */
+            text-overflow: ellipsis; /* Prevent overflow with an ellipsis */
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 140px; /* Max width for text to avoid cutting off */
+        }
+
+        /* Increase node padding if needed to prevent text cut-off */
+        /* This needs to be done in the sankey setup in your JavaScript */
+        .info-box {
+            position: fixed;
+            top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: white;
+            max-height: 90vh;
+            overflow-y: auto;
+            width: 20%;
+            text-align: center; /* Center text horizontally */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically if there's enough space */
+        }
+
+        #lawRefRight { left: 10px; }
+        #lawRefObligations { right: 10px; }
+    </style>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+</head>
+<body>
+    <div id="lawRefRight" class="info-box">Texte de Loi Droit</div>
+    <div id="lawRefObligations" class="info-box">Texte de Loi Obligation</div>
+    <div id="sankey" class="sankey-container"></div>
+    <div id="tooltip" style="position: absolute; visibility: hidden; background: lightgrey; border: 1px solid black; padding: 5px; border-radius: 5px;"></div>
+
+
+    <script>
+        async function fetchData() {
+            const response = await fetch('data/output.json');
+            return await response.json();
+        }
+
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        async function init() {
+            const rawData = await fetchData();
+            const rightId = getUrlParameter('rightId');
+            const focusedData = rawData.filter(d => d.right === rightId);
+
+            if (focusedData.length > 0) {
+                const sankeyData = transformDataForSankey(focusedData[0]); // Assuming the first item is what you want
+                drawSankey(sankeyData, focusedData[0]); // Pass focusedData[0] as argument
+            }
+        }
+
+        const tooltip = d3.select("#tooltip");
+
+        function transformDataForSankey(data) {
+            let nodes = [], links = [];
+            const nodeById = new Map();
+
+            // Since data is a single object now, directly access its properties
+            const rightNode = {id: data.right, type: 'right'};
+            nodes.push(rightNode);
+            nodeById.set(data.right, rightNode);
+
+            data.obligations.forEach(ob => {
+                const obNode = {id: ob.name, type: 'obligation', lawRef: ob.lawRef}; // Ensure you have the lawRef here if needed
+                if (!nodeById.has(ob.name)) {
+                    nodes.push(obNode);
+                    nodeById.set(ob.name, obNode);
+                }
+                links.push({source: obNode, target: rightNode, value: 1});
+            });
+
+            return {nodes, links};
+        }
+
+
+        function drawSankey(data, focusedData) {
+            const margin = {top: 30, right: 200, bottom: 30, left: 200}; // Adjust as needed
+            const width = 700 
+            const height = 300 
+            d3.select("#sankey").selectAll("*").remove(); // Clear previous SVG
+            const svg = d3.select("#sankey").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            const svgBackground = svg.append("rect")
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("fill", "transparent")
+                .on("click", resetStyles);
+            const sankey = d3.sankey()
+                .nodeWidth(20)
+                .nodePadding(40)
+                .extent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]]);
+
+            const {nodes, links} = sankey(data);
+
+            svg.append("g")
+                .selectAll("rect")
+                .data(nodes)
+                .enter().append("rect")
+                .classed("node", true) // Assign class here
+                .attr("x", d => d.x0)
+                .attr("y", d => d.y0)
+                .attr("height", d => d.y1 - d.y0)
+                .attr("width", sankey.nodeWidth())
+                .attr("fill", d => d.type === 'right' ? "#006233" : "#c1272d");
+
+            svg.append("g")
+                .attr("fill", "none")
+                .selectAll("path")
+                .data(links)
+                .enter().append("path")
+                .classed("link", true) // Assign class here
+                .attr("d", d3.sankeyLinkHorizontal())
+                .attr("stroke", "#76b7b2")
+                .attr("stroke-width", d => Math.max(1, d.width));
+
+            svg.append("g")
+                .selectAll("text")
+                .data(nodes)
+                .enter().append("text")
+                .attr("x", d => d.type === "obligation" ? d.x0 - 10 : d.x1 + 10) // Adjust for outside placement
+                .attr("y", d => (d.y1 + d.y0) / 2)
+                .attr("dy", "0.35em")
+                .attr("text-anchor", d => d.type === "obligation" ? "end" : "start")
+                .text(d => d.id)
+                .style("fill", "black");
+            
+            // Reset styles to default
+            function resetStyles() {
+                svg.selectAll(".node, .link")
+                    .style("opacity", 1); // Reset opacity to fully opaque
+            }
+
+            // After creating the SVG and appending the 'g' element
+            d3.select("#sankey > svg").on("click", function(event) {
+                // No need to check if the click is directly on the SVG, because this is now the desired behavior
+                resetStyles();
+                tooltip.style("visibility", "hidden");
+            });
+
+            // Highlight selected node and its connections
+            function highlightNodeAndConnections(selectedNode) {
+                const connectedNodes = new Set([selectedNode.id]);
+                
+                svg.selectAll(".link")
+                    .style("stroke-opacity", function(d) {
+                        const isSourceOrTarget = d.source.id === selectedNode.id || d.target.id === selectedNode.id;
+                        if (isSourceOrTarget) {
+                            connectedNodes.add(d.source.id);
+                            connectedNodes.add(d.target.id);
+                        }
+                        return isSourceOrTarget ? 0.8 : 0.1;
+                    });
+
+                svg.selectAll(".node rect")
+                    .style("opacity", d => connectedNodes.has(d.id) ? 1 : 0.1);
+
+            }
+
+            // Attach click event to right nodes
+            svg.selectAll(".node")
+                // Existing attributes setup for nodes...
+                .on("click", function(event, d) {
+                    if (d.type === "obligation") {
+                    // Call updateLawRefs for the clicked obligation
+                    highlightNodeAndConnections(d);
+                    const clickedObligationData = focusedData.obligations.find(ob => ob.name === d.id);
+                    if(clickedObligationData) {
+                        updateLawRefs(focusedData, clickedObligationData); // Make sure clickedObligationData is found
+                    }
+                } else {
+                    updateLawRefs(focusedData);
+                    highlightNodeAndConnections(d);
+                }
+                })
+
+            function updateLawRefs(data, clickedObligation = null) {
+                const lawRefRightElement = document.getElementById('lawRefRight');
+                const lawRefObligationsElement = document.getElementById('lawRefObligations');
+
+                // Use data.right to access the name of the right
+                lawRefRightElement.innerHTML = `<strong>${data.right}</strong><br/>${data.lawRef}`;
+
+                if (clickedObligation) {
+                    // Use clickedObligation.name to access the name of the clicked obligation and ensure lawRef is correctly accessed
+                    lawRefObligationsElement.innerHTML = `<strong>${clickedObligation.name}</strong><br/>${clickedObligation.lawRef}`;
+                }
+            }
+
+
+
+
+
+
+            // Attach click event to the SVG to reset styles when clicking outside the nodes
+            svg.on("click", resetStyles);
+
+
+
+        }
+
+        init();
+    </script>
+</body>
+</html>

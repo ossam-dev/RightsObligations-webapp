@@ -1,0 +1,91 @@
+[
+    {
+      "right": "Droit A",
+      "obligations": [
+        {"name": "Obligation 1", "lawRef": "Law 101"},
+        {"name": "Obligation 11", "lawRef": "Law 111"},
+        {"name": "Obligation 12", "lawRef": "Law 112"},
+        {"name": "Obligation 26", "lawRef": "Law 126"} 
+      ]
+    },
+    {
+      "right": "Droit B",
+      "obligations": [
+        {"name": "Obligation 2", "lawRef": "Law 102"},
+        {"name": "Obligation 11", "lawRef": "Law 111"},
+        {"name": "Obligation 13", "lawRef": "Law 113"},
+        {"name": "Obligation 27", "lawRef": "Law 127"}
+      ]
+    },
+    {
+      "right": "Droit C",
+      "obligations": [
+        {"name": "Obligation 3", "lawRef": "Law 103"},
+        {"name": "Obligation 14", "lawRef": "Law 114"},
+        {"name": "Obligation 15", "lawRef": "Law 115"},
+        {"name": "Obligation 28", "lawRef": "Law 128"} 
+      ]
+    },
+    {
+      "right": "Droit D",
+      "obligations": [
+        {"name": "Obligation 4", "lawRef": "Law 104"},
+        {"name": "Obligation 16", "lawRef": "Law 116"},
+        {"name": "Obligation 17", "lawRef": "Law 117"},
+        {"name": "Obligation 26", "lawRef": "Law 126"} 
+      ]
+    },
+    {
+      "right": "Droit E",
+      "obligations": [
+        {"name": "Obligation 5", "lawRef": "Law 105"},
+        {"name": "Obligation 18", "lawRef": "Law 118"},
+        {"name": "Obligation 19", "lawRef": "Law 119"},
+        {"name": "Obligation 27", "lawRef": "Law 127"} 
+      ]
+    },
+    {
+      "right": "Droit F",
+      "obligations": [
+        {"name": "Obligation 6", "lawRef": "Law 106"},
+        {"name": "Obligation 20", "lawRef": "Law 120"},
+        {"name": "Obligation 21", "lawRef": "Law 121"},
+        {"name": "Obligation 28", "lawRef": "Law 128"} 
+      ]
+    },
+    {
+      "right": "Droit G",
+      "obligations": [
+        {"name": "Obligation 7", "lawRef": "Law 107"},
+        {"name": "Obligation 22", "lawRef": "Law 122"},
+        {"name": "Obligation 29", "lawRef": "Law 129"} 
+      ]
+    },
+    {
+      "right": "Droit H",
+      "obligations": [
+        {"name": "Obligation 8", "lawRef": "Law 108"},
+        {"name": "Obligation 24", "lawRef": "Law 124"},
+        {"name": "Obligation 29", "lawRef": "Law 129"} 
+      ]
+    },
+
+    {
+      "right": "Droit I",
+      "obligations": [
+        {"name": "Obligation 9", "lawRef": "Law 109"},
+        {"name": "Obligation 25", "lawRef": "Law 125"},
+        {"name": "Obligation 30", "lawRef": "Law 130"} 
+      ]
+    },
+    {
+      "right": "Droit J",
+      "obligations": [
+        {"name": "Obligation 10", "lawRef": "Law 110"},
+        {"name": "Obligation 30", "lawRef": "Law 130"} 
+      ]
+    }
+  ]
+  
+  
+  
