@@ -10,4 +10,4 @@ This web application visualizes the relationships between **Moroccan rights and 
 
 ## 🚀 Live Deployment
 👉 The app is deployed on **GitHub Pages**:  
-🔗 [Link will be added after deployment]
+🔗 https://ossam-dev.github.io/RightsObligations-webapp/
