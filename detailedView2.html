@@ -216,7 +216,8 @@
     <script>
         // Initialize EmailJS
         emailjs.init("PgWfRZz3jiAZACZXI");  
-
+        
+        let focusedData = []; 
         async function fetchData() {
             const response = await fetch('data/output.json');
             return await response.json();
