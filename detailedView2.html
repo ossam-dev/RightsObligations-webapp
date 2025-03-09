@@ -415,8 +415,6 @@
             const userEmail = document.getElementById('user-email').value.trim();
             const selectedRight = document.getElementById('right-select').value.trim();
             const feedbackText = document.getElementById('feedback-text').value.trim();
-            const selectedObligation = focusedData.length > 0 ? focusedData[0].obligation.name : "Obligation non spécifiée";
-
             if (userName && userEmail && selectedRight && feedbackText) {
                 const templateParams = {
                     user_name: userName,
