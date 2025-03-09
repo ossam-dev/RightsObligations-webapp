@@ -1,10 +1,10 @@
-<!-- index.html-->
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <title>Droits & Obligations - Sankey Diagram</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue - Droits & Obligations</title>
     <style>
-        /* Basic Reset */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -13,337 +13,119 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #2d2d2d; /* Soft pink background */
-            color: #333;
-            padding: 20px;
-            line-height: 1.6;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 50px;
         }
 
-        /* Left logo */
-
-        /* Right logo */
-        .logo-right {
-            position: absolute;
-            top: 400px; /* Adjust as necessary */
-            right: 5px; /* Position it 20px from the right edge */
-            height: 340px; /* Adjust the height of the logo */
-            width: auto;
-        }
-
-        .logo-left {
-            position: absolute;
-            top: 400px; /* Adjust as necessary */
-            left:5px; /* Position it 20px from the left edge */
-            height: 340px; /* Adjust the height of the logo */
-            width: auto;
-        }
-
-        /* Sankey Container */
-        .sankey-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            margin-top: 20px;
-            width: 80%; /* Adjust width as needed */
-            margin-left: auto;
-            margin-right: auto;
-            position: relative;
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .logo {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 150px; /* Adjust the size of the logo as necessary */
-            height: auto;
+            max-width: 200px;
+            margin-bottom: 20px;
         }
 
-        /* Tooltip Style */
-        #tooltip {
-            background: #e30613; /* Vibrant red for contrast */
-            color: #fff;
-            border-radius: 4px;
-            padding: 8px 12px;
-            font-size: 14px;
+        h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .start-button {
             display: inline-block;
-            position: absolute;
-            z-index: 1000;
-            visibility: hidden; /* Keep hidden until needed */
-        }
-
-
-        /* Hover Effects */
-        .node rect:hover {
-            fill-opacity: 0.8;
-            cursor: pointer;
-        }
-
-        /* Node and Link Styles */
-        .node rect {
-            stroke: #fff;
-            stroke-width: 2px;
-        }
-
-        .link {
-            stroke: #de8500; /* Mustard color for links */
-            stroke-opacity: 0.7;
-        }
-
-        /* Text Style */
-        text {
-            fill: #333;
-            font-weight: bold;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            .sankey-container {
-                margin: 10px;
-                flex-direction: column;
-            }
-            select {
-                width: calc(100% - 40px);
-            }
-        }
-
-        /* ... (keep the previous styles and add the following) ... */
-
-        /* Sankey Container */
-        .sankey-container {
-            width: 100%; /* Full width to help center the diagram */
-            max-width: 1200px; /* Max width for larger screens */
-            margin: 20px auto; /* Centering the container */
-        }
-
-        /* SVG Style */
-        svg {
-            display: block; /* Ensures no extra space below svg element */
-            margin: auto; /* Center align the SVG within its container */
-        }
-
-        /* Text Style */
-        text {
-            font-size: 12px; /* Smaller font size for better fit */
-            text-overflow: ellipsis; /* Prevent overflow with an ellipsis */
-            overflow: hidden;
-            white-space: nowrap;
-            max-width: 140px; /* Max width for text to avoid cutting off */
-        }
-
-        #clusterButtons button.cluster-btn {
-            padding: 8px 16px;
-            margin: 5px;
-            background-color: #9ecfab; /* Light green */
+            padding: 12px 20px;
+            font-size: 18px;
+            color: white;
+            background-color: #006233;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: 0.3s;
+            margin-top: 10px;
         }
 
-        #clusterButtons button.cluster-btn:hover {
-            background-color: #8dbe98; /* Slightly darker green */
+        .start-button:hover {
+            background-color: #004d1a;
         }
 
+        .section {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+            text-align: left;
+        }
 
-        /* Increase node padding if needed to prevent text cut-off */
-        /* This needs to be done in the sankey setup in your JavaScript */
+        .section h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
 
+        .values-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 20px;
+        }
 
-
-
+        .values-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
     </style>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
 </head>
 <body>
-    <img src="Logo_Ocre.png" alt="Logo" class="logo">
-    <img src="Embleme_Ocre.png" alt="Right Logo" class="logo-right">
-    <img src="Embleme_Ocre.png" alt="Left Logo" class="logo-left">
 
-    <div id="clusterButtons">
-        <!-- Buttons will be dynamically added here -->
-    </div>    
-    <div class="sankey-container" id="sankey"></div>
-    <div id="tooltip" style="position: absolute; visibility: hidden; background: lightgrey; border: 1px solid black; padding: 5px; border-radius: 5px;"></div>
+    <div class="container">
+        <!-- Logo (Replace 'logo.png' with your actual logo file) -->
+        <img src="Logo_Ocre.png" alt="Organisation Logo" class="logo">
 
-    <script>
-        async function fetchData() {
-            // Replace with the correct path to your JSON data
-            const response = await fetch('data/output.json');
-            return await response.json();
-        }
+        <!-- Welcome Message -->
+        <h1>Bienvenue sur la plateforme Droits & Obligations</h1>
+        <p>
+            Cette plateforme vise à fournir une meilleure compréhension des liens entre 
+            les <strong>droits</strong> et les <strong>obligations</strong> au sein du cadre légal marocain. 
+            Découvrez comment chaque obligation permet d’accéder à certains droits et explorez les références légales correspondantes.
+        </p>
 
-        function transformDataForSankey(data, cluster) {
-            const filteredData = data.filter(d => d.cluster === cluster);
-            let nodes = [], links = [];
-            const nodeById = new Map();
+        <!-- Button to Navigate to Index -->
+        <a href="home.html" class="start-button">Explorer</a>
 
-            filteredData.forEach(d => {
-                const rightId = `${d.right}`;
-                let rightNode = nodeById.get(rightId);
-                if (!rightNode) {
-                    rightNode = {id: rightId, type: 'right', lawRef: d.lawRef}; // Include law reference for the right
-                    nodes.push(rightNode);
-                    nodeById.set(rightId, rightNode);
-                }
+        <!-- Qui sommes-nous ? Section -->
+        <div class="section">
+            <h2>Qui sommes-nous ?</h2>
+            <p>
+                <strong>OSSAM</strong> est une initiative portée par des jeunes Marocains visant à reconnecter la science, 
+                l'éducation et l'art pour façonner un avenir meilleur pour notre pays. 
+                En mettant en avant un référentiel de valeurs solide, OSSAM agit pour un Maroc 
+                où savoir et créativité sont au service du développement.
+            </p>
+        </div>
 
-                d.obligations.forEach(ob => {
-                    const obId = `${ob.name}`;
-                    let obNode = nodeById.get(obId);
-                    if (!obNode) {
-                        obNode = {id: obId, type: 'obligation', lawRef: ob.lawRef}; // Include law reference for the obligation
-                        nodes.push(obNode);
-                        nodeById.set(obId, obNode);
-                    }
+        <!-- Nos valeurs Section -->
+        <div class="section">
+            <h2>Nos valeurs</h2>
+            <div class="values-container">
+                <img src="values.png" alt="Nos Valeurs">
+            </div>
+        </div>
+    </div>
 
-                    links.push({source: obNode, target: rightNode, value: 1});
-                });
-            });
-
-            return {nodes, links};
-        }
-
-
-        const tooltip = d3.select("#tooltip");
-
-        function drawSankey(data) {
-            const margin = {top: 30, right: 200, bottom: 30, left: 200}; // Adjust as needed
-            const width = 1200 - margin.left - margin.right;
-            const height = 800 - margin.top - margin.bottom;
-            d3.select("#sankey").selectAll("*").remove(); // Clear previous SVG
-            const svg = d3.select("#sankey").append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-            const svgBackground = svg.append("rect")
-                .attr("width", "100%")
-                .attr("height", "100%")
-                .attr("fill", "transparent")
-                .on("click", resetStyles);
-            const sankey = d3.sankey()
-                .nodeWidth(20)
-                .nodePadding(40)
-                .extent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]]);
-
-            const {nodes, links} = sankey(data);
-
-            svg.append("g")
-                .selectAll("rect")
-                .data(nodes)
-                .enter().append("rect")
-                .classed("node", true) // Assign class here
-                .attr("x", d => d.x0)
-                .attr("y", d => d.y0)
-                .attr("height", d => d.y1 - d.y0)
-                .attr("width", sankey.nodeWidth())
-                .attr("fill", d => d.type === 'right' ? "#006233" : "#c1272d");
-
-            svg.append("g")
-                .attr("fill", "none")
-                .selectAll("path")
-                .data(links)
-                .enter().append("path")
-                .classed("link", true) // Assign class here
-                .attr("d", d3.sankeyLinkHorizontal())
-                .attr("stroke", "#76b7b2")
-                .attr("stroke-width", d => Math.max(1, d.width));
-
-            svg.append("g")
-                .selectAll("text")
-                .data(nodes)
-                .enter().append("text")
-                .attr("x", d => d.type === "obligation" ? d.x0 - 10 : d.x1 + 10) // Adjust for outside placement
-                .attr("y", d => (d.y1 + d.y0) / 2)
-                .attr("dy", "0.35em")
-                .attr("text-anchor", d => d.type === "obligation" ? "end" : "start")
-                .text(d => d.id)
-                .style("fill", "black");
-            
-            // Reset styles to default
-            function resetStyles() {
-                svg.selectAll(".node, .link")
-                    .style("opacity", 1); // Reset opacity to fully opaque
-            }
-
-            // After creating the SVG and appending the 'g' element
-            d3.select("#sankey > svg").on("click", function(event) {
-                // No need to check if the click is directly on the SVG, because this is now the desired behavior
-                resetStyles();
-                tooltip.style("visibility", "hidden");
-            });
-
-            // Highlight selected node and its connections
-            function highlightNodeAndConnections(selectedNode) {
-                const connectedNodes = new Set([selectedNode.id]);
-                
-                svg.selectAll(".link")
-                    .style("stroke-opacity", function(d) {
-                        const isSourceOrTarget = d.source.id === selectedNode.id || d.target.id === selectedNode.id;
-                        if (isSourceOrTarget) {
-                            connectedNodes.add(d.source.id);
-                            connectedNodes.add(d.target.id);
-                        }
-                        return isSourceOrTarget ? 0.8 : 0.1;
-                    });
-
-                svg.selectAll(".node rect")
-                    .style("opacity", d => connectedNodes.has(d.id) ? 1 : 0.1);
-
-            }
-
-            // Attach click event to right nodes
-            svg.selectAll(".node")
-                .on("click", function(event, d) {
-                        highlightNodeAndConnections(d);
-                })
-                .on("dblclick", function(event, d) {
-                if (d.type === "right") {
-                    console.log("Double-clicked:", d.id); // Debug line
-                    window.location.href = `detailedView.html?rightId=${encodeURIComponent(d.id)}`;
-                } else if (d.type === "obligation") {
-                    // New behavior for obligations
-                    window.location.href = `detailedView2.html?obligationId=${encodeURIComponent(d.id)}`;
-                }
-            });
-
-
-
-            // Attach click event to the SVG to reset styles when clicking outside the nodes
-            svg.on("click", resetStyles);
-
-
-
-        }
-
-        async function init() {
-            const rawData = await fetchData();
-            const clusters = Array.from(new Set(rawData.map(d => d.cluster)));
-            const container = d3.select("#clusterButtons");
-
-            // Clear previous buttons if any
-            container.selectAll("*").remove();
-
-            // Create a button for each cluster
-            clusters.forEach(cluster => {
-                container.append("button")
-                    .text(`${cluster}`)
-                    .attr("class", "cluster-btn")
-                    .on("click", () => drawSankey(transformDataForSankey(rawData, cluster)));
-            });
-
-            // Optionally, initialize the Sankey diagram with the first cluster
-            drawSankey(transformDataForSankey(rawData, clusters[0]));
-        }
-
-        init();
-    </script>
 </body>
 </html>
