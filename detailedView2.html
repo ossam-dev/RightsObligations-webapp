@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #2d2d2d; 
+            background-color: #2d2d2d;
             color: #333;
             padding: 20px;
             line-height: 1.6;
@@ -31,15 +32,14 @@
         }
 
         #tooltip {
-            background: #e30613; 
+            background: #e30613;
             color: #fff;
             border-radius: 4px;
             padding: 8px 12px;
             font-size: 14px;
-            display: inline-block;
             position: absolute;
             z-index: 1000;
-            visibility: hidden; 
+            visibility: hidden;
         }
 
         select {
@@ -48,10 +48,9 @@
             border: none;
             font-size: 16px;
             background-color: #9ecfab;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             color: #333;
         }
-
 
         .node rect:hover {
             fill-opacity: 0.8;
@@ -64,7 +63,7 @@
         }
 
         .link {
-            stroke: #de8500; 
+            stroke: #de8500;
             stroke-opacity: 0.7;
         }
 
@@ -77,32 +76,15 @@
             body {
                 padding: 10px;
             }
+
             .sankey-container {
                 margin: 10px;
                 flex-direction: column;
             }
+
             select {
                 width: calc(100% - 40px);
             }
-        }
-
-        .sankey-container {
-            width: 100%; 
-            max-width: 1200px;
-            margin: 20px auto;
-        }
-
-        svg {
-            display: block;
-            margin: auto;
-        }
-
-        text {
-            font-size: 12px;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-            max-width: 140px;
         }
 
         .info-box {
@@ -120,17 +102,21 @@
             justify-content: center;
         }
 
-        #lawRefRight { left: 10px; }
-        #lawRefObligations { right: 10px; }
-        
+        #lawRefRight {
+            left: 10px;
+        }
+
+        #lawRefObligations {
+            right: 10px;
+        }
+
         #feedback-panel {
-            background-color: #f9f9f9; /* Light gray background */
+            background-color: #f9f9f9;
             padding: 20px;
             border-radius: 10px;
             width: 50%;
             margin: auto;
         }
-
 
         #feedback-panel h3 {
             margin-bottom: 20px;
@@ -149,7 +135,7 @@
             border-radius: 4px;
             border: 1px solid #ccc;
             box-sizing: border-box;
-            margin-bottom: 0px; /* Reduce this value */
+            margin-bottom: 0;
         }
 
         #submit-feedback {
@@ -159,39 +145,46 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 0px; 
+            margin-top: 0;
         }
-        input, textarea, select {
+
+        input,
+        textarea,
+        select {
             width: 100%;
             padding: 8px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            margin-bottom: 15px; /* Add space between input fields */
+            margin-bottom: 15px;
         }
-
 
         textarea {
             height: 120px;
             resize: vertical;
         }
 
-        input::placeholder, textarea::placeholder {
+        input::placeholder,
+        textarea::placeholder {
             font-size: 14px;
             color: #888;
         }
-
-
     </style>
+    <script
+        type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
+  
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
 </head>
+
 <body>
     <div id="lawRefRight" class="info-box">Cliquez sur un droit pour voir sa référence de loi.</div>
     <div id="lawRefObligations" class="info-box">Cliquez sur un devoir pour voir sa référence de loi.</div>
     <div id="sankey" class="sankey-container"></div>
     <div id="tooltip" style="position: absolute; visibility: hidden; background: lightgrey; border: 1px solid black; padding: 5px; border-radius: 5px;"></div>
-    
+
     <!-- Feedback Panel -->
     <div id="feedback-panel">
         <h3>Feedback</h3>
@@ -210,12 +203,13 @@
         <label for="feedback-text">Votre Feedback:</label>
         <textarea id="feedback-text" placeholder="Rédigez votre feedback ici..."></textarea>
 
-        <button id="submit-feedback">Send Feedback</button>
+        <button id="submit-feedback">Envoyer Feedback</button>
     </div>
 
-
-
     <script>
+        // Initialize EmailJS
+        emailjs.init("YOUR_USER_ID");  // Replace with your actual User ID from EmailJS
+
         async function fetchData() {
             const response = await fetch('data/output.json');
             return await response.json();
@@ -252,13 +246,10 @@
                 const sankeyData = transformDataForSankey(focusedData);
                 drawSankey(sankeyData, focusedData);
                 populateRightsDropdown(focusedData);
-                // Populate the obligations dropdown
             } else {
                 document.getElementById('sankey').innerHTML = 'No associated rights found for this obligation.';
             }
         }
-
-        const tooltip = d3.select("#tooltip");
 
         function transformDataForSankey(focusedData) {
             let nodes = [], links = [];
@@ -267,26 +258,26 @@
             focusedData.forEach(data => {
                 let rightNode = nodeById.get(data.right);
                 if (!rightNode) {
-                    rightNode = {id: data.right, type: 'right', lawRef: data.lawRef};
+                    rightNode = { id: data.right, type: 'right', lawRef: data.lawRef };
                     nodes.push(rightNode);
                     nodeById.set(data.right, rightNode);
                 }
 
                 let obNode = nodeById.get(data.obligation.name);
                 if (!obNode) {
-                    obNode = {id: data.obligation.name, type: 'obligation', lawRef: data.obligation.lawRef};
+                    obNode = { id: data.obligation.name, type: 'obligation', lawRef: data.obligation.lawRef };
                     nodes.push(obNode);
                     nodeById.set(data.obligation.name, obNode);
                 }
 
-                links.push({source: obNode, target: rightNode, value: 1});
+                links.push({ source: obNode, target: rightNode, value: 1 });
             });
 
-            return {nodes, links};
+            return { nodes, links };
         }
 
         function drawSankey(data, focusedData) {
-            const margin = {top: 30, right: 200, bottom: 30, left: 200};
+            const margin = { top: 30, right: 200, bottom: 30, left: 200 };
             const width = 700;
             const height = 300;
             d3.select("#sankey").selectAll("*").remove();
@@ -301,7 +292,7 @@
                 .nodePadding(40)
                 .extent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]]);
 
-            const {nodes, links} = sankey(data);
+            const { nodes, links } = sankey(data);
 
             svg.append("g")
                 .selectAll("rect")
@@ -334,87 +325,43 @@
                 .attr("text-anchor", d => d.type === "obligation" ? "end" : "start")
                 .text(d => d.id)
                 .style("fill", "black");
-
-            function resetStyles() {
-                svg.selectAll(".node, .link")
-                    .style("opacity", 1);
-            }
-
-            d3.select("#sankey > svg").on("click", function(event) {
-                resetStyles();
-                tooltip.style("visibility", "hidden");
-            });
-
-            function highlightNodeAndConnections(selectedNode) {
-                const connectedNodes = new Set([selectedNode.id]);
-
-                svg.selectAll(".link")
-                    .style("stroke-opacity", function(d) {
-                        const isSourceOrTarget = d.source.id === selectedNode.id || d.target.id === selectedNode.id;
-                        if (isSourceOrTarget) {
-                            connectedNodes.add(d.source.id);
-                            connectedNodes.add(d.target.id);
-                        }
-                        return isSourceOrTarget ? 0.8 : 0.1;
-                    });
-
-                svg.selectAll(".node rect")
-                    .style("opacity", d => connectedNodes.has(d.id) ? 1 : 0.1);
-            }
-
-            svg.selectAll(".node")
-                .on("click", function(event, d) {
-                    highlightNodeAndConnections(d);
-
-                    if (d.type === "right") {
-                        updateLawRefs(d);
-                    } else {
-                        updateLawRefs();
-                    }
-                });
-
-            function updateLawRefs(clickedNode = null) {
-                const lawRefRightElement = document.getElementById('lawRefRight');
-                const lawRefObligationsElement = document.getElementById('lawRefObligations');
-
-                if (clickedNode && clickedNode.type === "right") {
-                    lawRefRightElement.innerHTML = `<strong>${clickedNode.id}<br/></strong> ${clickedNode.lawRef}`;
-                } else {
-                    lawRefRightElement.innerHTML = "Cliquez sur un droit pour voir sa référence de loi.";
-                }
-
-                if (clickedNode && clickedNode.type === "obligation") {
-                    lawRefObligationsElement.innerHTML = `<strong>${clickedNode.id}<br/></strong> ${clickedNode.lawRef}`;
-                } else {
-                    lawRefObligationsElement.innerHTML = `<strong>${focusedData[0].obligation.name}<br/></strong> ${focusedData[0].obligation.lawRef}`;
-                }
-            }
-
-            svg.on("click", resetStyles);
         }
 
         function populateRightsDropdown(focusedData) {
             const rightSelect = document.getElementById('obligation-select');
-
-            // Clear any existing options
             rightSelect.innerHTML = '';
-
-            // Populate the dropdown with rights linked to the obligation
             focusedData.forEach(data => {
                 const option = document.createElement('option');
-                option.value = data.right;  // Set the value to the right
-                option.textContent = data.right;  // Display the right name
+                option.value = data.right;
+                option.textContent = data.right;
                 rightSelect.appendChild(option);
             });
         }
 
+        // Submit feedback and send email via EmailJS
+        document.getElementById('submit-feedback').addEventListener('click', function () {
+            const userName = document.getElementById('user-name').value.trim();
+            const userEmail = document.getElementById('user-email').value.trim();
+            const selectedObligation = document.getElementById('obligation-select').value.trim();
+            const feedbackText = document.getElementById('feedback-text').value.trim();
 
-        document.getElementById('submit-feedback').addEventListener('click', function() {
-            const selectedObligation = document.getElementById('obligation-select').value;
-            const feedbackText = document.getElementById('feedback-text').value;
+            if (userName && userEmail && selectedObligation && feedbackText) {
+                const templateParams = {
+                    user_name: userName,
+                    user_email: userEmail,
+                    right_name: selectedObligation,
+                    obligation_name: selectedObligation,
+                    feedback_text: feedbackText,
+                };
 
-            if (selectedObligation && feedbackText) {
-                alert('Feedback for ' + selectedObligation + ' saved for now: ' + feedbackText);
+                emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+                    .then(function (response) {
+                        console.log('SUCCESS!', response);
+                        alert('Feedback sent successfully!');
+                    }, function (error) {
+                        console.error('FAILED...', error);
+                        alert('There was an issue sending your feedback. Please try again.');
+                    });
             } else {
                 alert('Please fill in all fields.');
             }
@@ -423,4 +370,5 @@
         init();
     </script>
 </body>
+
 </html>
