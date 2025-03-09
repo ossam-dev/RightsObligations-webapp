@@ -217,7 +217,6 @@
         // Initialize EmailJS
         emailjs.init("PgWfRZz3jiAZACZXI");  
         
-        let focusedData = []; 
         async function fetchData() {
             const response = await fetch('data/output.json');
             return await response.json();
@@ -423,7 +422,7 @@
                     user_name: userName,
                     user_email: userEmail,
                     right_name: selectedRight,
-                    obligation_name: selectedObligation,
+                    obligation_name: getUrlParameter('obligationId').trim(),
                     feedback_text: feedbackText,
                 };
 
