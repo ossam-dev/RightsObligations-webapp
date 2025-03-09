@@ -202,8 +202,8 @@
         <label for="user-email">Adresse Mail</label>
         <input type="email" id="user-email" placeholder="Enter your email">
 
-        <label for="obligation-select">Sélectionnez le droit concerné :</label>
-        <select id="obligation-select">
+        <label for="right-select">Sélectionnez le droit concerné :</label>
+        <select id="right-select">
             <!-- Options will be populated dynamically -->
         </select>
 
@@ -394,7 +394,7 @@
         }
 
         function populateRightsDropdown(focusedData) {
-            const rightSelect = document.getElementById('obligation-select');
+            const rightSelect = document.getElementById('right-select');
 
             // Clear any existing options
             rightSelect.innerHTML = '';
@@ -413,14 +413,15 @@
         document.getElementById('submit-feedback').addEventListener('click', function() {
             const userName = document.getElementById('user-name').value.trim();
             const userEmail = document.getElementById('user-email').value.trim();
-            const selectedObligation = document.getElementById('obligation-select').value.trim();
+            const selectedRight = document.getElementById('right-select').value.trim();
             const feedbackText = document.getElementById('feedback-text').value.trim();
+            const selectedObligation = focusedData.length > 0 ? focusedData[0].obligation.name : "Obligation non spécifiée";
 
-            if (userName && userEmail && selectedObligation && feedbackText) {
+            if (userName && userEmail && selectedRight && feedbackText) {
                 const templateParams = {
                     user_name: userName,
                     user_email: userEmail,
-                    right_name: selectedObligation,
+                    right_name: selectedRight,
                     obligation_name: selectedObligation,
                     feedback_text: feedbackText,
                 };
